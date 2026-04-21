@@ -6,67 +6,50 @@
     <title>우리학교 매니저</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <style>
-        :root {
-            --primary: #4a90e2; --bg: #f5f7fa; --card: #ffffff;
-            --text: #333; --accent: #ff6b6b;
-        }
+        :root { --primary: #4a90e2; --bg: #f5f7fa; --card: #ffffff; --text: #333; --accent: #ff6b6b; }
         body { font-family: -apple-system, system-ui, sans-serif; background: var(--bg); margin: 0; color: var(--text); }
         .app { max-width: 500px; margin: 0 auto; background: var(--card); min-height: 100vh; display: flex; flex-direction: column; }
-        
         header { background: var(--primary); color: white; padding: 15px; text-align: center; font-weight: bold; position: sticky; top: 0; z-index: 100; }
-        
         .tabs { display: flex; border-bottom: 1px solid #eee; }
         .tab { flex: 1; padding: 15px; text-align: center; cursor: pointer; font-weight: bold; color: #888; }
         .tab.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
-
         .content { padding: 20px; flex: 1; }
-        
         .date-ctrl { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .date-btn { background: #eee; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; }
+        .date-btn { background: #eee; border: none; border-radius: 50%; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         #date-display { font-weight: bold; font-size: 1.1rem; color: #555; }
-
         .info-card { background: #fff; border: 1px solid #eee; border-radius: 16px; padding: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .school-label { font-size: 0.9rem; color: var(--primary); font-weight: bold; margin-bottom: 12px; border-bottom: 1px solid #f0f4f8; padding-bottom: 8px; }
-
-        .timetable-row { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #f9f9f9; }
-        .period { width: 75px; flex-shrink: 0; font-weight: bold; color: var(--primary); font-size: 1rem; border-right: 2px solid #f0f4f8; margin-right: 15px; }
-        .subject { flex: 1; font-size: 1.1rem; font-weight: 500; word-break: keep-all; }
-
-        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd; font-size: 1rem; box-sizing: border-box; }
         
+        /* 급식 알레르기 텍스트 스타일 - 더 작게 수정 */
+        #meal-content { font-size: 1.05rem; color: #444; line-height: 1.5; }
+        .meal-item { margin-bottom: 10px; display: block; }
+        .allergy-text { 
+            color: #ff6b6b; 
+            font-size: 0.75rem; /* 더 작게 */
+            display: block; 
+            margin-top: 1px; 
+            font-weight: normal; 
+            opacity: 0.9;
+        }
+        
+        .timetable-row { display: flex; align-items: center; padding: 14px 0; border-bottom: 1px solid #f9f9f9; }
+        .period { width: 75px; flex-shrink: 0; font-weight: bold; color: var(--primary); border-right: 2px solid #f0f4f8; margin-right: 15px; }
+        input, select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd; font-size: 1rem; box-sizing: border-box; }
         .grade-class-row { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
         .input-group { display: flex; align-items: center; gap: 5px; flex: 1; }
         .input-group input { width: 60px; text-align: center; margin: 0; }
-        .input-label { font-weight: bold; color: #666; font-size: 0.9rem; }
-
         .btn-save { background: var(--primary); color: white; border: none; font-weight: bold; margin-top: 15px; cursor: pointer; }
-        
-        .toggle-container { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .switch { position: relative; display: inline-block; width: 50px; height: 26px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px; }
-        .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: var(--primary); }
-        input:checked + .slider:before { transform: translateX(24px); }
-
-        #search-results { background: #fff; border: 1px solid #eee; border-radius: 8px; margin-top: 5px; max-height: 150px; overflow-y: auto; }
-        .result-item { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; cursor: pointer; }
-        .result-item:hover { background: #f0f7ff; }
+        #search-results { background: #fff; border: 1px solid #eee; border-radius: 8px; max-height: 150px; overflow-y: auto; }
+        .result-item { padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; }
         .hidden { display: none; }
-        #meal-content { line-height: 2.2; font-size: 1.1rem; color: #444; }
         .no-data { text-align: center; color: #999; padding: 40px 0; }
-        
-        /* 스위트알러트 내부 리스트 스타일 */
-        .swal-allergy-list { text-align: left; font-size: 0.9rem; display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
     </style>
 </head>
 <body>
 
 <div class="app">
     <header>🍱 우리학교 매니저</header>
-
     <div class="tabs">
         <div class="tab active" onclick="showTab('meal')">급식</div>
         <div class="tab" onclick="showTab('table')">시간표</div>
@@ -75,7 +58,7 @@
 
     <div class="content">
         <div id="tab-setup" class="hidden">
-            <h3>🏫 학교 및 학급 설정</h3>
+            <h3>🏫 학교 설정</h3>
             <select id="office-select">
                 <option value="B10" selected>서울특별시교육청</option>
                 <option value="J10">경기도교육청</option>
@@ -96,30 +79,16 @@
                 <option value="T10">제주특별자치도교육청</option>
             </select>
             <input type="text" id="school-search" placeholder="학교명 입력 후 엔터" onkeyup="if(window.event.keyCode==13){searchSchool()}">
-            <button onclick="searchSchool()" style="background:#34a853; color:white; border:none; cursor:pointer;">학교 검색</button>
+            <button onclick="searchSchool()" style="background:#34a853; color:white; border:none;">학교 검색</button>
             <div id="search-results"></div>
             
             <div class="grade-class-row">
-                <div class="input-group">
-                    <input type="number" id="grade-input" value="1">
-                    <span class="input-label">학년</span>
-                </div>
-                <div class="input-group">
-                    <input type="number" id="class-input" value="1">
-                    <span class="input-label">반</span>
-                </div>
-            </div>
-
-            <div class="toggle-container" style="margin-top: 15px;">
-                <span>🥗 급식 알레르기 표시</span>
-                <label class="switch">
-                    <input type="checkbox" id="allergy-toggle" onchange="updateAllergySetting()">
-                    <span class="slider"></span>
-                </label>
+                <div class="input-group"><input type="number" id="grade-input" value="1"><span class="input-label">학년</span></div>
+                <div class="input-group"><input type="number" id="class-input" value="1"><span class="input-label">반</span></div>
             </div>
             
-            <button onclick="showAllergyInfo()" style="background:#666; color:white; border:none; margin-top:10px; cursor:pointer;">🛡️ 알레르기 정보 확인</button>
             <button class="btn-save" onclick="saveSettings()">저장 및 시작하기</button>
+            <button onclick="resetData()" style="background:#ff6b6b; color:white; border:none; margin-top:10px; cursor:pointer; border-radius:8px; padding:10px;">💾 데이터 초기화</button>
         </div>
 
         <div id="view-section">
@@ -128,15 +97,13 @@
                 <span id="date-display"></span>
                 <button class="date-btn" onclick="changeDate(1)">❯</button>
             </div>
-
             <div id="tab-meal" class="info-card">
-                <div class="school-label" id="meal-school-name">학교 미설정</div>
+                <div class="school-label" id="meal-school-name">미설정</div>
                 <div id="meal-content">설정에서 학교를 등록해주세요.</div>
             </div>
-
             <div id="tab-table" class="info-card hidden">
-                <div class="school-label" id="table-school-name">학교 미설정</div>
-                <div id="timetable-content">시간표 정보가 없습니다.</div>
+                <div class="school-label" id="table-school-name">미설정</div>
+                <div id="timetable-content">정보 없음</div>
             </div>
         </div>
     </div>
@@ -145,15 +112,12 @@
 <script>
     const API_KEY = '008d3f6b9a1749559b9f07749bf97c0a';
     const ALLERGY_MAP = {
-        1: "난류", 2: "우유", 3: "메밀", 4: "땅콩", 5: "대두", 6: "밀", 7: "고등어", 8: "게", 9: "새우", 
-        10: "돼지고기", 11: "복숭아", 12: "토마토", 13: "아황산류", 14: "호두", 15: "닭고기", 16: "쇠고기", 
-        17: "오징어", 18: "조개류(굴, 전복, 홍합 포함)", 19: "잣"
+        1:"난류", 2:"우유", 3:"메밀", 4:"땅콩", 5:"대두", 6:"밀", 7:"고등어", 8:"게", 9:"새우", 
+        10:"돼지고기", 11:"복숭아", 12:"토마토", 13:"아황산류", 14:"호두", 15:"닭고기", 16:"쇠고기", 
+        17:"오징어", 18:"조개류", 19:"잣"
     };
 
-    let config = { 
-        atptCode: '', schulCode: '', schulNm: '', schulLevel: '', 
-        grade: '1', class: '1', showAllergy: false 
-    };
+    let config = { atptCode: '', schulCode: '', schulNm: '', schulLevel: '', grade: '1', class: '1', showAllergy: true };
     let currentDate = new Date();
 
     const day = currentDate.getDay();
@@ -163,118 +127,63 @@
     window.onload = function() {
         updateDateDisplay();
         const saved = localStorage.getItem('school_manager_config');
-        if (saved) {
-            config = JSON.parse(saved);
-            document.getElementById('allergy-toggle').checked = config.showAllergy;
-            document.getElementById('office-select').value = config.atptCode || 'B10';
-            document.getElementById('grade-input').value = config.grade;
-            document.getElementById('class-input').value = config.class;
-            refreshData();
-        } else {
-            showTab('setup');
-        }
+        if (saved) { config = JSON.parse(saved); refreshData(); } else { showTab('setup'); }
     };
 
-    // SweetAlert2를 이용한 알레르기 정보창
-    function showAllergyInfo() {
-        let listHtml = '<div class="swal-allergy-list">';
-        Object.entries(ALLERGY_MAP).forEach(([num, name]) => {
-            listHtml += `<div><b>${num}.</b> ${name}</div>`;
-        });
-        listHtml += '</div>';
-
+    function resetData() {
         Swal.fire({
-            title: '알레르기 유발 식품 번호',
-            html: listHtml,
-            icon: 'info',
-            confirmButtonText: '확인',
-            confirmButtonColor: '#4a90e2'
-        });
+            title: '초기화하시겠습니까?',
+            text: "저장된 학교 정보가 모두 삭제됩니다.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff6b6b',
+            confirmButtonText: '삭제',
+            cancelButtonText: '취소'
+        }).then((result) => { if (result.isConfirmed) { localStorage.removeItem('school_manager_config'); location.reload(); } });
     }
 
     function showTab(tabName) {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
         if(event && event.currentTarget.classList.contains('tab')) event.currentTarget.classList.add('active');
-        
         document.getElementById('tab-meal').classList.add('hidden');
         document.getElementById('tab-table').classList.add('hidden');
         document.getElementById('tab-setup').classList.add('hidden');
         document.getElementById('view-section').classList.remove('hidden');
-
-        if(tabName === 'setup') {
-            document.getElementById('tab-setup').classList.remove('hidden');
-            document.getElementById('view-section').classList.add('hidden');
-        } else {
-            document.getElementById('tab-' + tabName).classList.remove('hidden');
-            refreshData();
-        }
+        if(tabName === 'setup') { document.getElementById('tab-setup').classList.remove('hidden'); document.getElementById('view-section').classList.add('hidden'); }
+        else { document.getElementById('tab-' + tabName).classList.remove('hidden'); refreshData(); }
     }
 
     async function searchSchool() {
         const office = document.getElementById('office-select').value;
         const name = document.getElementById('school-search').value;
-        if(!name) {
-            Swal.fire('알림', '학교명을 입력하세요.', 'warning');
-            return;
-        }
+        if(!name) return Swal.fire('알림', '학교명을 입력하세요.', 'warning');
         try {
             const res = await fetch(`https://open.neis.go.kr/hub/schoolInfo?KEY=${API_KEY}&Type=json&ATPT_OFCDC_SC_CODE=${office}&SCHUL_NM=${name}`);
             const data = await res.json();
             if(data.schoolInfo) {
-                const resultsDiv = document.getElementById('search-results');
-                resultsDiv.innerHTML = data.schoolInfo[1].row.map(row => {
+                document.getElementById('search-results').innerHTML = data.schoolInfo[1].row.map(row => {
                     let level = row.SCHUL_NM.includes("중학교") ? "mis" : (row.SCHUL_NM.includes("고등학교") ? "his" : "els");
                     return `<div class="result-item" onclick="selectSchool('${row.ATPT_OFCDC_SC_CODE}','${row.SD_SCHUL_CODE}','${row.SCHUL_NM}','${level}')">
                                 <strong>${row.SCHUL_NM}</strong><br><small>${row.ORG_RDNMA}</small>
                             </div>`;
                 }).join('');
-            } else { 
-                Swal.fire('검색 결과 없음', '해당 학교를 찾을 수 없습니다.', 'error');
-            }
-        } catch(e) { 
-            Swal.fire('오류', '데이터를 가져오는데 실패했습니다.', 'error');
-        }
+            } else { Swal.fire('알림', '검색 결과가 없습니다.', 'info'); }
+        } catch(e) { Swal.fire('오류', '검색 중 문제가 발생했습니다.', 'error'); }
     }
 
     function selectSchool(atpt, schul, name, level) {
-        config.atptCode = atpt;
-        config.schulCode = schul;
-        config.schulNm = name;
-        config.schulLevel = level;
+        config.atptCode = atpt; config.schulCode = schul; config.schulNm = name; config.schulLevel = level;
         document.getElementById('school-search').value = name;
         document.getElementById('search-results').innerHTML = "";
-        Swal.fire({
-            title: '학교 선택 완료',
-            text: `${name}가 선택되었습니다.`,
-            icon: 'success',
-            timer: 1500,
-            showConfirmButton: false
-        });
-    }
-
-    function updateAllergySetting() {
-        config.showAllergy = document.getElementById('allergy-toggle').checked;
+        Swal.fire({ title: '선택 완료', text: name, icon: 'success', timer: 1000, showConfirmButton: false });
     }
 
     function saveSettings() {
-        if(!config.schulCode) {
-            Swal.fire('알림', '먼저 학교를 검색하고 선택하세요.', 'warning');
-            return;
-        }
+        if(!config.schulCode) return Swal.fire('알림', '학교를 선택해주세요.', 'warning');
         config.grade = document.getElementById('grade-input').value;
         config.class = document.getElementById('class-input').value;
-        config.atptCode = document.getElementById('office-select').value;
-        config.showAllergy = document.getElementById('allergy-toggle').checked;
         localStorage.setItem('school_manager_config', JSON.stringify(config));
-        
-        Swal.fire({
-            title: '저장 완료!',
-            text: '정보가 성공적으로 저장되었습니다.',
-            icon: 'success',
-            confirmButtonText: '시작하기'
-        }).then(() => {
-            location.reload();
-        });
+        Swal.fire('저장 완료', '데이터를 불러옵니다.', 'success').then(() => location.reload());
     }
 
     function changeDate(days) {
@@ -282,23 +191,18 @@
         const day = currentDate.getDay();
         if (day === 0) currentDate.setDate(currentDate.getDate() + (days > 0 ? 1 : -2));
         else if (day === 6) currentDate.setDate(currentDate.getDate() + (days > 0 ? 2 : -1));
-        
-        updateDateDisplay();
-        refreshData();
+        updateDateDisplay(); refreshData();
     }
 
     function updateDateDisplay() {
         const week = ['일', '월', '화', '수', '목', '금', '토'];
-        const dateStr = currentDate.toISOString().slice(0, 10);
-        const dayName = week[currentDate.getDay()];
-        document.getElementById('date-display').innerText = `${dateStr} (${dayName})`;
+        document.getElementById('date-display').innerText = `${currentDate.toISOString().slice(0, 10)} (${week[currentDate.getDay()]})`;
     }
 
     function refreshData() {
         if(!config.schulCode) return;
         const dateStr = currentDate.toISOString().slice(0, 10).replace(/-/g, '');
-        getMeal(dateStr);
-        getTimetable(dateStr);
+        getMeal(dateStr); getTimetable(dateStr);
     }
 
     async function getMeal(dateStr) {
@@ -308,20 +212,36 @@
             const res = await fetch(`https://open.neis.go.kr/hub/mealServiceDietInfo?KEY=${API_KEY}&Type=json&ATPT_OFCDC_SC_CODE=${config.atptCode}&SD_SCHUL_CODE=${config.schulCode}&MLSV_YMD=${dateStr}`);
             const data = await res.json();
             if(data.mealServiceDietInfo) {
-                let menu = data.mealServiceDietInfo[1].row[0].DDISH_NM;
-                if(!config.showAllergy) menu = menu.replace(/\([0-9.]+\)/g, ''); 
-                menu = menu.replace(/[*+@#]/g, '').replace(/<br\/>/g, '<br>').trim();
-                el.innerHTML = menu;
+                let rawMenu = data.mealServiceDietInfo[1].row[0].DDISH_NM;
+                let items = rawMenu.split('<br/>');
+                
+                let processedHtml = items.map(item => {
+                    let allergyMatch = item.match(/\(([0-9.]+)\)/);
+                    let allergyNames = "";
+                    if (allergyMatch) {
+                        let nums = allergyMatch[1].split('.');
+                        allergyNames = nums.map(n => ALLERGY_MAP[n]).filter(Boolean).join(', ');
+                    }
+                    let menuName = item.replace(/\([0-9.]+\)/g, '').replace(/[*+@#]/g, '').trim();
+                    
+                    // ( ) 괄호 추가 및 작게 표시
+                    return `
+                        <div class="meal-item">
+                            <b>${menuName}</b>
+                            ${allergyNames ? `<span class="allergy-text">(${allergyNames})</span>` : ''}
+                        </div>
+                    `;
+                }).join('');
+                el.innerHTML = processedHtml;
             } else { el.innerHTML = "<div class='no-data'>급식 정보가 없습니다.</div>"; }
         } catch(e) { el.innerText = "로드 실패"; }
     }
 
     async function getTimetable(dateStr) {
         const el = document.getElementById('timetable-content');
-        document.getElementById('table-school-name').innerText = `${config.schulNm} (${config.grade}학년 ${config.class}반)`;
-        const url = `https://open.neis.go.kr/hub/${config.schulLevel}Timetable?KEY=${API_KEY}&Type=json&ATPT_OFCDC_SC_CODE=${config.atptCode}&SD_SCHUL_CODE=${config.schulCode}&ALL_TI_YMD=${dateStr}&GRADE=${config.grade}&CLASS_NM=${config.class}`;
+        document.getElementById('table-school-name').innerText = `${config.schulNm} (${config.grade}-${config.class})`;
         try {
-            const res = await fetch(url);
+            const res = await fetch(`https://open.neis.go.kr/hub/${config.schulLevel}Timetable?KEY=${API_KEY}&Type=json&ATPT_OFCDC_SC_CODE=${config.atptCode}&SD_SCHUL_CODE=${config.schulCode}&ALL_TI_YMD=${dateStr}&GRADE=${config.grade}&CLASS_NM=${config.class}`);
             const data = await res.json();
             const key = config.schulLevel + "Timetable";
             if(data[key]) {
@@ -334,6 +254,5 @@
         } catch(e) { el.innerText = "로드 실패"; }
     }
 </script>
-
 </body>
 </html>
